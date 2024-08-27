@@ -1,0 +1,104 @@
+{
+  "user": {
+    "name": "Sarah Muller",
+    "imgUrl": "https://cdn.vectorstock.com/i/500p/01/77/woman-face-portrait-generic-app-profile-picture-vector-42000177.jpg",
+    "age": 30,
+    "cards": [
+      {
+        "number": "1234 5678",
+        "validity": "12/25",
+        "balance": 1000.5,
+        "currency": "USD",
+        "cardType": "VISA"
+      },
+      {
+        "number": "2345 6789 0123 4567",
+        "validity": "01/26",
+        "balance": 12000.5,
+        "currency": "USD",
+        "cardType": "VISA"
+      },
+      {
+        "number": "2345 6789 0123 4567",
+        "validity": "01/26",
+        "balance": 12000.5,
+        "currency": "USD",
+        "cardType": "VISA"
+      }
+    ]
+  },
+  "transactions": [
+    {
+      "amount": 100,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 0
+    },
+    {
+      "amount": 200,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 1
+    },
+    {
+      "amount": 100,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 0
+    },
+    {
+      "amount": 100,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 0
+    },
+    {
+      "amount": 200,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 1
+    },
+    {
+      "amount": 100,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 0
+    },
+    {
+      "amount": 100,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 0
+    },
+    {
+      "amount": 200,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 1
+    },
+    {
+      "amount": 100,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 0
+    },
+    {
+      "amount": 100,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 0
+    },
+    {
+      "amount": 200,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 1
+    },
+    {
+      "amount": 100,
+      "user": "Firmansyah A.",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 0
+    }
+  ]
+}
