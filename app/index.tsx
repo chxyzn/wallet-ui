@@ -1,9 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import HomeScreen from "./(tabs)/(home)";
 import Onboarding from "./onboarding";
 
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
@@ -25,6 +23,5 @@ export default function App() {
     return null;
   }
 
-  console.log(showOnboarding);
-  return showOnboarding ? <Onboarding /> : <HomeScreen />;
+  return showOnboarding ? <Onboarding go="false" /> : <Onboarding go="true" />;
 }

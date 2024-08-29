@@ -35,7 +35,6 @@ export default function TabLayout() {
           elevation: 10,
           shadowRadius: 199,
         },
-
         headerShadowVisible: true,
         tabBarShowLabel: false,
       }}
