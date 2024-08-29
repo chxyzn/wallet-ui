@@ -5,6 +5,13 @@
 4. Card Screen
 5. Uses data..config.json file for values.
 
+## Installation
+Find the apk file in the project.
+
+## Demo
+https://github.com/user-attachments/assets/82e46e90-f378-4e0b-a031-31f566386978
+
+
    
 # Welcome to your Expo app 👋
 
