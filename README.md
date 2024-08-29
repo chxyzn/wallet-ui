@@ -6,7 +6,7 @@
 5. Uses data.config.json file for data.
 
 ## Installation
-Find the apk file in the project or [https://drive.google.com/file/d/1sk_FQugjoPSoc918WgrZc5qPAOiYNwRZ/view?usp=sharing]here.
+Find the apk file in the project or [here](https://drive.google.com/file/d/1sk_FQugjoPSoc918WgrZc5qPAOiYNwRZ/view?usp=sharing).
 
 ## Demo
 https://github.com/user-attachments/assets/82e46e90-f378-4e0b-a031-31f566386978
