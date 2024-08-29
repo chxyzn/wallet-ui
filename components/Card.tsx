@@ -96,16 +96,15 @@ export default function CardComponent({
 
         <View style={styles.cardInfoRow}>
           <View style={styles.cardInfo}>
-            <Text style={styles.whiteText}>Valid Thru</Text>
-            <Text style={styles.regularText}>{card.validity}</Text>
-          </View>
-
-          <View style={styles.cardInfo}>
             <Text style={styles.whiteText}>Account Number</Text>
             <Text style={styles.regularText}>
               {" "}
               {maskAccountNumber(card.accountNumber)}
             </Text>
+          </View>
+          <View style={styles.cardInfo}>
+            <Text style={styles.whiteText}>Valid Thru</Text>
+            <Text style={styles.regularText}>{card.validity}</Text>
           </View>
         </View>
       </View>
