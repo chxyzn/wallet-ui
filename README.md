@@ -1,3 +1,11 @@
+## Features
+1. Onboarding
+2. Qr Scanner
+3. Data Persistance
+4. Card Screen
+5. Uses data..config.json file for values.
+
+   
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
