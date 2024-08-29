@@ -25,21 +25,20 @@ export default function TabTwoScreen() {
   );
   const [loaded, setLoaded] = useState<boolean>(false);
 
-  console.log("user is");
   useEffect(() => {
-    console.log("dataConfig is");
-    console.log(dataConfig);
     const user: User = User.fromJSON(dataConfig.user);
     setUser(user);
     setLoaded(true);
-
-    console.log("user is");
-    console.log(user);
   }, []);
 
   return (
-    <SafeAreaView style={safe_area_android.AndroidSafeArea}>
-      <View style={styles.container}>
+    <SafeAreaView
+      style={{
+        ...safe_area_android.AndroidSafeArea,
+        backgroundColor: Colors.lightGrey,
+      }}
+    >
+      <ScrollView overScrollMode="never" style={styles.container}>
         <AppBar user={user}></AppBar>
         <Text style={styles.title}>My Card</Text>
         {!loaded ? (
@@ -47,6 +46,10 @@ export default function TabTwoScreen() {
         ) : (
           <View style={styles.cardView}>
             <FlatList
+              scrollEnabled={false}
+              showsVerticalScrollIndicator={false}
+              persistentScrollbar={false}
+              overScrollMode="never"
               data={user.cards}
               renderItem={({ item }) => <FilppedCard card={item} />}
             ></FlatList>
@@ -62,20 +65,22 @@ export default function TabTwoScreen() {
             Add New Card
           </Text>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontFamily: "SfProMedium",
     color: Colors.balck,
+    marginTop: verticalScale(12),
   },
   container: {
     paddingLeft: horizontalScale(16),
     paddingRight: horizontalScale(16),
+    marginTop: verticalScale(36.5),
     backgroundColor: Colors.lightGrey,
     height: "100%",
   },

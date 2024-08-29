@@ -11,7 +11,6 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-
         tabBarStyle: {
           backgroundColor: Colors.white,
           borderTopColor: Colors.lightGrey,
@@ -68,9 +67,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="cards"
         options={{
-          title: "Explore",
+          title: "Cards",
           tabBarActiveTintColor: Colors.balck,
           tabBarInactiveTintColor: Colors.lightBlack,
           tabBarIcon: ({ color }) => (

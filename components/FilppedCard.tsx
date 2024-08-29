@@ -8,14 +8,9 @@ import { Card } from "@/types/Card";
 export default function FilppedCard({ card }: { card: Card }) {
   return (
     <View style={styles.flippedCard}>
-      <Feather
-        name="wifi"
-        size={24}
-        color={Colors.balck}
-        style={styles.rotate}
-      />
+      <Feather name="wifi" size={24} color={Colors.balck} />
       <Text style={styles.creditCardNumber} numberOfLines={1}>
-        {card.balance}
+        {card.number}
       </Text>
 
       <View style={styles.whiteView}>
@@ -48,12 +43,11 @@ const styles = StyleSheet.create({
     borderRadius: verticalScale(30),
     backgroundColor: "#c8e9ca",
     display: "flex",
-    paddingTop: verticalScale(16),
-    paddingLeft: horizontalScale(16),
+    paddingTop: verticalScale(26),
+    paddingLeft: horizontalScale(26),
     paddingRight: horizontalScale(16),
-    marginBottom: verticalScale(24),
+    marginBottom: verticalScale(16),
   },
-  rotate: {},
   whiteView: {
     backgroundColor: Colors.white,
     height: verticalScale(100),

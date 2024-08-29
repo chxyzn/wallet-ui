@@ -18,22 +18,34 @@ export default function CardComponent({
   onPressFunction,
   cardHeight,
   cardWidth,
+  enableTouch = true,
 }: {
   card: Card;
   onPressFunction: (card: Card) => void;
   cardHeight?: number;
   cardWidth?: number;
+  enableTouch?: boolean;
 }) {
   const [showBalance, setShowBalance] = useState<boolean>(false);
 
+  const maskAccountNumber = (accountNumber: string): string => {
+    const visibleDigits = 5;
+    const maskedSection = "*".repeat(accountNumber.length - visibleDigits);
+    const visibleSection = accountNumber.slice(-visibleDigits);
+    return `${maskedSection}${visibleSection}`;
+  };
   return (
-    <TouchableOpacity onPress={(_) => onPressFunction(card)}>
+    <TouchableOpacity
+      activeOpacity={enableTouch ? 0.6 : 1}
+      onPress={(_) => onPressFunction(card)}
+    >
       <View
         style={{
           ...styles.container,
           height: cardHeight ?? verticalScale(240),
           width: cardWidth ?? horizontalScale(270),
           marginRight: cardWidth === undefined ? horizontalScale(20) : 0,
+          backgroundColor: card.color,
         }}
       >
         {/* currency row */}
@@ -90,7 +102,10 @@ export default function CardComponent({
 
           <View style={styles.cardInfo}>
             <Text style={styles.whiteText}>Account Number</Text>
-            <Text style={styles.regularText}> {card.number}</Text>
+            <Text style={styles.regularText}>
+              {" "}
+              {maskAccountNumber(card.accountNumber)}
+            </Text>
           </View>
         </View>
       </View>
@@ -104,8 +119,8 @@ const styles = StyleSheet.create({
     height: verticalScale(250),
     backgroundColor: Colors.primary,
     borderRadius: moderateScale(30),
-    paddingLeft: moderateScale(12),
-    paddingRight: moderateScale(12),
+    paddingLeft: moderateScale(20),
+    paddingRight: moderateScale(20),
     paddingTop: verticalScale(12),
     paddingBottom: verticalScale(12),
     display: "flex",
@@ -183,5 +198,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.balck,
     textAlign: "left",
+    alignSelf: "flex-start",
   },
 });

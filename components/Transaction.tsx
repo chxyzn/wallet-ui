@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/Colors";
 import { Transaction } from "@/types/Transaction";
-import { horizontalScale, moderateScale } from "@/utils/screen";
+import { horizontalScale, moderateScale, verticalScale } from "@/utils/screen";
 import { View, Text, StyleSheet } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { collectManifestSchemes } from "expo-linking";
@@ -19,7 +19,7 @@ export default function TransactionComponent({
     const ampm = hours >= 12 ? "PM" : "AM";
 
     hours = hours % 12;
-    hours = hours ? hours : 12; // Adjust hour "0" to "12"
+    hours = hours ? hours : 12;
 
     const minutesFormatted = minutes < 10 ? `0${minutes}` : minutes;
 
@@ -35,7 +35,7 @@ export default function TransactionComponent({
           <Feather name="arrow-down-left" size={26} color="black" />
         )}
       </View>
-      <View>
+      <View style={styles.content}>
         <Text style={styles.mediumText} numberOfLines={1}>
           {transaction.user}
         </Text>
@@ -43,14 +43,16 @@ export default function TransactionComponent({
           {formatTimestampTo12Hour(transaction.timestamp)}
         </Text>
       </View>
-      <Text style={styles.mediumText}>
-        {transaction.type === 0 ? (
-          <Text style={{ color: "green" }}>+</Text>
-        ) : (
-          <Text style={{ color: "red" }}>-</Text>
-        )}
-        {" \u0024 " + transaction.amount}
-      </Text>
+      <View style={styles.end}>
+        <Text style={styles.mediumText}>
+          {transaction.type !== 0 ? (
+            <Text style={{ color: "green" }}>+</Text>
+          ) : (
+            <Text style={{ color: "red" }}>-</Text>
+          )}
+          {" \u0024 " + transaction.amount}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -59,10 +61,12 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     alignItems: "center",
     paddingLeft: horizontalScale(20),
+
     paddingRight: horizontalScale(20),
+    marginBottom: verticalScale(6),
   },
   circle: {
     width: horizontalScale(50),
@@ -74,13 +78,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   content: {
+    alignSelf: "flex-start",
+    width: horizontalScale(220),
     paddingLeft: moderateScale(16),
     paddingRight: moderateScale(16),
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",
-    alignSelf: "flex-start",
   },
+  end: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+  },
+
   mediumText: {
     fontFamily: "SfProMedium",
     fontSize: 16,
@@ -88,7 +100,7 @@ const styles = StyleSheet.create({
   },
   mediumTextGrey: {
     fontFamily: "SfProMedium",
-    fontSize: 16,
+    fontSize: 14,
     color: Colors.grey,
   },
 });

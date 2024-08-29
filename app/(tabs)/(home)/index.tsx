@@ -1,7 +1,13 @@
 import AppBar from "@/components/AppBar";
 import { User } from "@/types/User";
-import { useEffect, useState } from "react";
-import { Text, View, FlatList, StyleSheet } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import dataConfig from "../../../data.config.json";
 import CardComponent from "@/components/Card";
@@ -13,6 +19,13 @@ import { useRouter } from "expo-router";
 import { Card } from "@/types/Card";
 import Feather from "@expo/vector-icons/Feather";
 import safe_area_android from "@/constants/safe_area_android";
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import FormComponent from "@/components/BottomSheet";
+import { getTrasactionData } from "@/utils/storeage";
 
 export default function HomeScreen() {
   const [user, setUser] = useState<User>(
@@ -25,6 +38,8 @@ export default function HomeScreen() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const [refreshTransactions, setRefreshTransactions] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -34,6 +49,11 @@ export default function HomeScreen() {
     );
 
     setUser(user);
+    getTrasactionData().then((transactions) => {
+      transactions.forEach((transaction) => {
+        setTransactions((prev) => [transaction, ...prev]);
+      });
+    });
     setTransactions(transactions);
   }, []);
 
@@ -44,49 +64,102 @@ export default function HomeScreen() {
     });
   }
 
+  const handleSheetChanges = useCallback((index: number) => {}, []);
   return (
     <SafeAreaView style={safe_area_android.AndroidSafeArea}>
-      <View style={styles.container}>
-        <AppBar user={user}></AppBar>
-        <Text style={styles.accountText}>Account</Text>
-        <FlatList
-          horizontal
-          data={user.cards}
-          renderItem={({ item }) => (
-            <CardComponent onPressFunction={handleCardPress} card={item} />
-          )}
-          style={styles.cardList}
-        ></FlatList>
-        {/* Button Row */}
-        <View style={styles.buttonRow}>
-          <View style={styles.buttonView}>
-            <Feather name="arrow-down-left" size={26} color="black" />
-            <Text style={styles.mediumText}>Request</Text>
+      <GestureHandlerRootView>
+        <ScrollView overScrollMode="never">
+          <View style={styles.container}>
+            <AppBar user={user}></AppBar>
+            <Text style={styles.accountText}>Account</Text>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              persistentScrollbar={false}
+              overScrollMode="never"
+              data={user.cards}
+              renderItem={({ item }) => (
+                <CardComponent onPressFunction={handleCardPress} card={item} />
+              )}
+              style={styles.cardList}
+            ></FlatList>
+            {/* Button Row */}
+            <View style={styles.buttonRow}>
+              <View style={styles.buttonView}>
+                <Feather name="arrow-down-left" size={26} color="black" />
+                <Text style={styles.mediumText}>Request</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  openBottonSheet();
+                }}
+              >
+                <View style={styles.buttonView}>
+                  <Feather name="arrow-up-right" size={26} color="black" />
+                  <Text style={styles.mediumText}>Transfer</Text>
+                </View>
+              </TouchableOpacity>
+              <View style={styles.circleButton}>
+                <Text style={{ color: Colors.white, fontSize: 24 }}>+</Text>
+              </View>
+            </View>
+            {/* Divider  */}
+            <View style={styles.divider}></View>
+            <View style={styles.transactionRow}>
+              <Text style={styles.transactionText}>Transactions</Text>
+              <Text style={styles.viewAllText}>View all</Text>
+            </View>
           </View>
-          <View style={styles.buttonView}>
-            <Feather name="arrow-up-right" size={26} color="black" />
-            <Text style={styles.mediumText}>Transfer</Text>
-          </View>
-          <View style={styles.circleButton}>
-            <Text style={{ color: Colors.white, fontSize: 24 }}>+</Text>
-          </View>
-        </View>
-        {/* Divider  */}
-        <View style={styles.divider}></View>
-        <View style={styles.transactionRow}>
-          <Text style={styles.transactionText}>Transactions</Text>
-          <Text style={styles.viewAllText}>View all</Text>
-        </View>
-      </View>
-
-      <Text style={styles.todayText}>TODAY</Text>
-      <FlatList
-        data={transactions}
-        renderItem={({ item }) => <TransactionComponent transaction={item} />}
-        style={styles.transactionList}
-      ></FlatList>
+          <Text style={styles.todayText}>TODAY</Text>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            persistentScrollbar={false}
+            overScrollMode="never"
+            data={transactions}
+            renderItem={({ item }) => (
+              <TransactionComponent transaction={item} />
+            )}
+            style={styles.transactionList}
+            scrollEnabled={false}
+          ></FlatList>
+          <BottomSheet
+            ref={bottomSheetRef}
+            snapPoints={["85%"]}
+            onChange={handleSheetChanges}
+            enablePanDownToClose={true}
+            index={-1}
+            backgroundStyle={{ backgroundColor: "transparent" }}
+            handleIndicatorStyle={{ backgroundColor: "transparent" }}
+            onClose={async () => {
+              const storedTransactions = await getTrasactionData();
+              const configTransactions: Transaction[] =
+                dataConfig.transactions.map((transaction: any) =>
+                  Transaction.fromJSON(transaction)
+                );
+              setTransactions([
+                ...storedTransactions.reverse(),
+                ...configTransactions,
+              ]);
+            }}
+          >
+            <BottomSheetView style={styles.bottomSheetContentContainer}>
+              <FormComponent
+                cards={user.cards.map((card) => card.number)}
+                closeFunction={closeBottomSheet}
+              ></FormComponent>
+            </BottomSheetView>
+          </BottomSheet>
+        </ScrollView>
+      </GestureHandlerRootView>
     </SafeAreaView>
   );
+  function openBottonSheet() {
+    bottomSheetRef.current?.snapToIndex(0);
+  }
+  function closeBottomSheet() {
+    bottomSheetRef.current?.close();
+    setRefreshTransactions(!refreshTransactions);
+  }
 }
 
 const styles = StyleSheet.create({
@@ -147,7 +220,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   transactionList: {
-    marginBottom: horizontalScale(16),
+    marginBottom: horizontalScale(106),
   },
   mediumText: {
     fontFamily: "SfProMedium",
@@ -171,5 +244,18 @@ const styles = StyleSheet.create({
     marginRight: horizontalScale(16),
     marginLeft: horizontalScale(16),
     marginBottom: verticalScale(8),
+  },
+  bottomSheetContainer: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: Colors.lightBlack,
+  },
+  bottomSheetContentContainer: {
+    flex: 1,
+    backgroundColor: Colors.secondary,
+    borderTopLeftRadius: horizontalScale(30),
+    borderTopRightRadius: horizontalScale(30),
+    marginHorizontal: horizontalScale(16),
+    alignItems: "center",
   },
 });

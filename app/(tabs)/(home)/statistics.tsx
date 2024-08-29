@@ -3,7 +3,8 @@ import Chart from "@/components/Chart";
 import MonthTab from "@/components/MonthTab";
 import { Colors } from "@/constants/Colors";
 import { Card } from "@/types/Card";
-import { horizontalScale } from "@/utils/screen";
+import { horizontalScale, verticalScale } from "@/utils/screen";
+import { createIconSetFromFontello } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
@@ -12,16 +13,23 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Statistics() {
   const card = useLocalSearchParams().card;
   const cardData = JSON.parse(card.toString());
-  const cardInstance = new Card(
-    cardData.number,
-    cardData.balance,
-    cardData.currency,
-    cardData.validity,
-    cardData.cardType,
-    cardData.currencyFlagImgUrl,
-    cardData.months,
-    cardData.transactions
+  const cardInstance = Card.fromJSON(cardData);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const [showChart, setShowChart] = useState(
+    cardInstance.months.length > 0 &&
+      cardInstance.transactions[activeIndex].length > 0
   );
+
+  function updateSelectedMonth(index: number) {
+    setActiveIndex(index);
+    if (cardInstance.transactions[index].length === 0) {
+      setShowChart(false);
+    } else {
+      setShowChart(true);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.body}>
@@ -30,11 +38,17 @@ export default function Statistics() {
           cardWidth={horizontalScale(330)}
           onPressFunction={(_) => {}}
           card={cardInstance}
+          enableTouch={false}
         />
         <MonthTab
-          months={["Oct", "Nov", "Dec", "Jan", "Feb", "Mar"]}
+          months={cardInstance.months}
+          updateParentFunction={updateSelectedMonth}
         ></MonthTab>
-        <Chart data={[12, 11, 1]} />
+        {showChart ? (
+          <Chart data={cardInstance.transactions[activeIndex]} />
+        ) : (
+          <Text style={styles.noDataFoundText}>No Data Found</Text>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -46,7 +60,13 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     backgroundColor: Colors.white,
+  },
+  noDataFoundText: {
+    marginTop: verticalScale(150),
+    color: Colors.balck,
+    fontSize: 20,
+    fontFamily: "SfProMedium",
   },
 });
