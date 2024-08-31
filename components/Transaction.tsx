@@ -7,8 +7,10 @@ import { collectManifestSchemes } from "expo-linking";
 
 export default function TransactionComponent({
   transaction,
+  extraBottomMargin = false,
 }: {
   transaction: Transaction;
+  extraBottomMargin: boolean;
 }) {
   function formatTimestampTo12Hour(timeString: string): string {
     const date = new Date(timeString);
@@ -27,7 +29,9 @@ export default function TransactionComponent({
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={extraBottomMargin ? styles.extarMarginContainer : styles.container}
+    >
       <View style={styles.circle}>
         {transaction.type === 0 ? (
           <Feather name="arrow-up-right" size={26} color="black" />
@@ -61,12 +65,22 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "center",
     paddingLeft: horizontalScale(20),
 
     paddingRight: horizontalScale(20),
     marginBottom: verticalScale(6),
+  },
+  extarMarginContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: horizontalScale(20),
+
+    paddingRight: horizontalScale(20),
+    marginBottom: verticalScale(116),
   },
   circle: {
     width: horizontalScale(50),
@@ -78,10 +92,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   content: {
-    alignSelf: "flex-start",
-    width: horizontalScale(220),
+    flex: 1,
     paddingLeft: moderateScale(16),
-    paddingRight: moderateScale(16),
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",

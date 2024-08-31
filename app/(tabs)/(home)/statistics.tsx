@@ -31,6 +31,7 @@ export default function Statistics() {
     }
   }
 
+  console.log("re render stats");
   return (
     <SafeAreaView style={styles.body}>
       <View style={styles.body}>

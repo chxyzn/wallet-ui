@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import dataConfig from "../../../data.config.json";
 import CardComponent from "@/components/Card";
-import { horizontalScale, verticalScale } from "@/utils/screen";
+import { horizontalScale, moderateScale, verticalScale } from "@/utils/screen";
 import { Colors } from "@/constants/Colors";
 import { Transaction } from "@/types/Transaction";
 import TransactionComponent from "@/components/Transaction";
@@ -23,7 +23,10 @@ import {
   GestureHandlerRootView,
   ScrollView,
 } from "react-native-gesture-handler";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetFlatList,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
 import FormComponent from "@/components/BottomSheet";
 import { getTrasactionData } from "@/utils/storeage";
 
@@ -37,9 +40,12 @@ export default function HomeScreen() {
   );
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [refreshTransactions, setRefreshTransactions] = useState(false);
+  const [isViewAllEnabled, setIsViewAllEnabled] = useState(false);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const [refreshTransactions, setRefreshTransactions] = useState(false);
+  const transactionBottomSheetRef = useRef<BottomSheet>(null);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -64,11 +70,27 @@ export default function HomeScreen() {
     });
   }
 
-  const handleSheetChanges = useCallback((index: number) => {}, []);
+  const handleClose = useCallback(async () => {
+    const storedTransactions = await getTrasactionData();
+    const configTransactions: Transaction[] = dataConfig.transactions.map(
+      (transaction: any) => Transaction.fromJSON(transaction)
+    );
+
+    const newTransactions = [
+      ...storedTransactions.reverse(),
+      ...configTransactions,
+    ];
+
+    if (JSON.stringify(transactions) !== JSON.stringify(newTransactions)) {
+      setTransactions(newTransactions);
+    }
+  }, [transactions]);
+
+  console.log("re render");
   return (
     <SafeAreaView style={safe_area_android.AndroidSafeArea}>
       <GestureHandlerRootView>
-        <ScrollView overScrollMode="never">
+        <View>
           <View style={styles.container}>
             <AppBar user={user}></AppBar>
             <Text style={styles.accountText}>Account</Text>
@@ -103,44 +125,15 @@ export default function HomeScreen() {
                 <Text style={{ color: Colors.white, fontSize: 24 }}>+</Text>
               </View>
             </View>
-            {/* Divider  */}
-            <View style={styles.divider}></View>
-            <View style={styles.transactionRow}>
-              <Text style={styles.transactionText}>Transactions</Text>
-              <Text style={styles.viewAllText}>View all</Text>
-            </View>
           </View>
-          <Text style={styles.todayText}>TODAY</Text>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            persistentScrollbar={false}
-            overScrollMode="never"
-            data={transactions}
-            renderItem={({ item }) => (
-              <TransactionComponent transaction={item} />
-            )}
-            style={styles.transactionList}
-            scrollEnabled={false}
-          ></FlatList>
           <BottomSheet
             ref={bottomSheetRef}
             snapPoints={["85%"]}
-            onChange={handleSheetChanges}
             enablePanDownToClose={true}
             index={-1}
             backgroundStyle={{ backgroundColor: "transparent" }}
             handleIndicatorStyle={{ backgroundColor: "transparent" }}
-            onClose={async () => {
-              const storedTransactions = await getTrasactionData();
-              const configTransactions: Transaction[] =
-                dataConfig.transactions.map((transaction: any) =>
-                  Transaction.fromJSON(transaction)
-                );
-              setTransactions([
-                ...storedTransactions.reverse(),
-                ...configTransactions,
-              ]);
-            }}
+            onClose={handleClose}
           >
             <BottomSheetView style={styles.bottomSheetContentContainer}>
               <FormComponent
@@ -149,7 +142,66 @@ export default function HomeScreen() {
               ></FormComponent>
             </BottomSheetView>
           </BottomSheet>
-        </ScrollView>
+        </View>
+        <BottomSheet
+          ref={transactionBottomSheetRef}
+          snapPoints={["43%", "80%"]}
+          enablePanDownToClose={false}
+          onChange={(index) => {
+            if (index === 1) {
+              setIsViewAllEnabled(true);
+            }
+            if (index === 0) {
+              setIsViewAllEnabled(false);
+            }
+          }}
+          index={0}
+          enableHandlePanningGesture={true}
+          backgroundStyle={{
+            backgroundColor: Colors.white,
+          }}
+        >
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginHorizontal: horizontalScale(16),
+              marginBottom: verticalScale(-10),
+            }}
+          >
+            <Text style={styles.transactionText}>Transactions</Text>
+            <TouchableOpacity
+              onPress={() => {
+                if (isViewAllEnabled) {
+                  setIsViewAllEnabled(false);
+                  transactionBottomSheetRef.current?.snapToIndex(0);
+                } else {
+                  setIsViewAllEnabled(true);
+                  transactionBottomSheetRef.current?.snapToIndex(1);
+                }
+              }}
+            >
+              <Text style={styles.viewAllText}>
+                View {isViewAllEnabled ? "less" : "all"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.todayText}>TODAY</Text>
+          <BottomSheetFlatList
+            scrollEnabled={true}
+            style={styles.transactionBottomSheetContentContainer}
+            data={transactions}
+            renderItem={({ item, index }) => (
+              <TransactionComponent
+                transaction={item}
+                extraBottomMargin={index === transactions.length - 1}
+              />
+            )}
+          ></BottomSheetFlatList>
+        </BottomSheet>
       </GestureHandlerRootView>
     </SafeAreaView>
   );
@@ -242,7 +294,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: Colors.grey,
     marginRight: horizontalScale(16),
-    marginLeft: horizontalScale(16),
+    marginLeft: horizontalScale(20),
     marginBottom: verticalScale(8),
   },
   bottomSheetContainer: {
@@ -252,10 +304,14 @@ const styles = StyleSheet.create({
   },
   bottomSheetContentContainer: {
     flex: 1,
+    height: "100%",
     backgroundColor: Colors.secondary,
     borderTopLeftRadius: horizontalScale(30),
     borderTopRightRadius: horizontalScale(30),
     marginHorizontal: horizontalScale(16),
-    alignItems: "center",
+  },
+  transactionBottomSheetContentContainer: {
+    backgroundColor: Colors.white,
+    paddingBottom: verticalScale(100),
   },
 });

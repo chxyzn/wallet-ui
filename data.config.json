@@ -117,6 +117,12 @@
       "user": "Firmansyah A.",
       "timestamp": "2021-09-01T00:00:00.000Z",
       "type": 0
+    },
+    {
+      "amount": 100,
+      "user": "Random User",
+      "timestamp": "2021-09-01T00:00:00.000Z",
+      "type": 0
     }
   ],
   "chartData": {
