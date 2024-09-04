@@ -1,3 +1,5 @@
+
+https://github.com/user-attachments/assets/f8b985d7-5754-44f9-a08f-f20007423877
 ## Features
 1. Onboarding
 2. Qr Scanner
@@ -6,10 +8,12 @@
 5. Uses data.config.json file for data.
 
 ## Installation
-Find the apk file in the project or [here](https://drive.google.com/file/d/17OWVXnXfKwuavsUH3wmbx-OwmEWAZWq0/view?usp=sharing).
+Find the apk file in the project or [here]([https://drive.google.com/file/d/17OWVXnXfKwuavsUH3wmbx-OwmEWAZWq0/view?usp=sharing](https://drive.google.com/file/d/1JXc87PiYUwtrtvjRoCJpuALt3sfw8C3R/view?usp=sharing)).
 
 ## Demo
-https://github.com/user-attachments/assets/82e46e90-f378-4e0b-a031-31f566386978
+
+
+https://github.com/user-attachments/assets/34e8892c-bf41-4ed1-a5e7-a42dd0d51cd9
 
 
    
