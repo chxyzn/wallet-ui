@@ -1,5 +1,3 @@
-
-https://github.com/user-attachments/assets/f8b985d7-5754-44f9-a08f-f20007423877
 ## Features
 1. Onboarding
 2. Qr Scanner
